@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - HUD
+  - DASH
+  - 3arrows
+  - explosion
+  - Wall1
+  - HUD2
+  - shield
   layers:
   - Default
   - TransparentFX
@@ -11,8 +19,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - PlayerProjectile
   - 
   - 
   - 
