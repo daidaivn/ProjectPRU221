@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
     public float tileSize = 1f; // Kích thước của mỗi tile
     public int viewDistance = 5; // Khoảng cách camera hiển thị map
     public GameObject parentContainer;
-    public GameObject spawnedObjectsGroup; // GameObject để nhóm các mục sinh ra
+    public GameObject spawnedObjectsFolder; // GameObject để nhóm các mục sinh ra vào thư mục
     public GameObject[] obstaclePrefabs; // Mảng Prefab của các vật cản
 
     public float minDistance = 1f; // Khoảng cách tối thiểu giữa các vật cản
@@ -148,31 +148,32 @@ public class CameraController : MonoBehaviour
     }
 
     private void SpawnObstacle(Vector2Int position)
+{
+    float randomDistance = Random.Range(minDistance, maxDistance);
+    float obstacleSpacing = randomDistance * tileSize; // Khoảng cách giữa các vật cản
+    Vector3 spawnPosition = new Vector3(position.x * tileSize, position.y * tileSize, 0f);
+
+    // Kiểm tra khoảng cách với các vật cản đã tồn tại
+    bool isObstacleTooClose = IsObstacleTooClose(position, obstacleSpacing);
+    if (isObstacleTooClose)
     {
-        float randomDistance = Random.Range(minDistance, maxDistance);
-        float obstacleSpacing = randomDistance * tileSize; // Khoảng cách giữa các vật cản
-        Vector3 spawnPosition = new Vector3(position.x * tileSize, position.y * tileSize, 0f);
-
-        // Kiểm tra khoảng cách với các vật cản đã tồn tại
-        bool isObstacleTooClose = IsObstacleTooClose(position, obstacleSpacing);
-        if (isObstacleTooClose)
-        {
-            return; // Không sinh ra vật cản mới
-        }
-
-        // Xác suất sinh ra vật cản
-        float obstacleProbability = Random.Range(0f, 1f);
-        float obstacleSpawnChance = 0.2f; // Xác suất sinh ra vật cản (vd: 20%)
-
-        if (obstacleProbability <= obstacleSpawnChance)
-        {
-            int randomIndex = Random.Range(0, obstaclePrefabs.Length);
-            GameObject obstaclePrefab = obstaclePrefabs[randomIndex];
-            GameObject newObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
-            newObstacle.transform.parent = spawnedObjectsGroup.transform; // Thêm vật cản vào trong GameObject Group
-            obstacles.Add(position, newObstacle);
-        }
+        return; // Không sinh ra vật cản mới
     }
+
+    // Xác suất sinh ra vật cản
+    float obstacleProbability = Random.Range(0f, 1f);
+    float obstacleSpawnChance = 0.2f; // Xác suất sinh ra vật cản (vd: 20%)
+
+    if (obstacleProbability <= obstacleSpawnChance)
+    {
+        int randomIndex = Random.Range(0, obstaclePrefabs.Length);
+        GameObject obstaclePrefab = obstaclePrefabs[randomIndex];
+        GameObject newObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+        newObstacle.transform.parent = spawnedObjectsFolder.transform; // Thêm vật cản vào trong GameObject Folder
+        obstacles.Add(position, newObstacle);
+    }
+}
+
 
     private bool IsObstacleTooClose(Vector2Int position, float obstacleSpacing)
     {

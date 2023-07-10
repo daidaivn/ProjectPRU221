@@ -152,7 +152,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 517103235}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &96654451
 GameObject:
@@ -514,13 +514,14 @@ GameObject:
   - component: {fileID: 327639744}
   - component: {fileID: 327639743}
   - component: {fileID: 327639745}
+  - component: {fileID: 327639746}
   m_Layer: 0
   m_Name: EXP
   m_TagString: ExperienceItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &327639743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,13 +529,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327639742}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d597859311620f448c8d3ac7a19168c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   experienceItemPrefab: {fileID: 2810335718369938310, guid: d6cb920894c3cdb4e8c6cc09d5000209, type: 3}
-  maxExperienceItems: 20
+  maxExperienceItems: 5
 --- !u!4 &327639744
 Transform:
   m_ObjectHideFlags: 0
@@ -542,13 +543,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327639742}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_Father: {fileID: 517103235}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &327639745
 Grid:
@@ -562,6 +563,24 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &327639746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327639742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98b5e8cea081f5c4793e3c3df48f1e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstaclePrefab: {fileID: 2810335718369938310, guid: d6cb920894c3cdb4e8c6cc09d5000209, type: 3}
+  character: {fileID: 519420032}
+  cameraFollowSpeed: 3
+  minDistance: 2
+  limitDistance: 30
+  maxObstacles: 70
 --- !u!1 &327799946
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,7 +615,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 517103235}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &327799948
 TilemapRenderer:
@@ -2471,6 +2490,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 327639744}
   - {fileID: 630849553}
   - {fileID: 1256532684}
   - {fileID: 1793038599}
@@ -2760,7 +2780,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 517103235}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &630849554
 TilemapRenderer:
@@ -17522,7 +17542,7 @@ MonoBehaviour:
   character: {fileID: 519420028}
   tilePrefab: {fileID: 7313104769938680570, guid: 55d2cc6c5c934eb4c83a9f12b6248442, type: 3}
   tileSize: 1
-  viewDistance: 13
+  viewDistance: 15
   parentContainer: {fileID: 81151732}
   spawnedObjectsGroup: {fileID: 81151732}
   obstaclePrefabs:
@@ -18606,7 +18626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1056, y: 384}
+  m_AnchoredPosition: {x: 863, y: 406}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218472977
@@ -18734,7 +18754,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 517103235}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &1256532685
 TilemapRenderer:
@@ -21046,7 +21066,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 517103235}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &1793038600
 TilemapRenderer:
