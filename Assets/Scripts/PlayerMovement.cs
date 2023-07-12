@@ -2,143 +2,112 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.CanvasScaler;
 
-public class PlayerMovement : MonoBehaviour {
-
+public class PlayerMovement : MonoBehaviour
+{
     public float moveSpeed = 5f;
-    int numberOfProjectiles;
     public Rigidbody2D rb;
-    [SerializeField] Transform hand;
+    public Transform hand;
     private float activeMoveSpeed = 5f;
-    public GameObject generade;
+    public GameObject grenade;
     public GameObject player;
-   
-    [SerializeField]
-    GameObject projectile;
 
-    Vector2 startPoint;
+    [SerializeField] private GameObject projectile;
 
-
-    float radius;
-    float rotationModifier;
-    public float dashSpeed;
-    public float dashLength = .5f, dashCooldown = 1f;
-    private float dashCounter;
-    private float dashCoolCounter;
-
-    private bool isdash = false;
-    private bool isbomb = false;
-    private bool ismutiple = false;
-    private bool shiel = false;
-    public GameObject shied;
-
-    Vector2 movement;
-
+    private Vector2 movement;
 
     public void onClickDash()
     {
-        
-        isdash = true;
         Skill1.Instance.isCooldown1 = !Skill1.Instance.isCooldown1;
         GameObject.Find("Dash").GetComponent<Button>().interactable = false;
+        StartCoroutine(DashCoroutine());
     }
-    public void onClickMutiple()
-    {
-        ismutiple = true;
-        Skill2.Instance.isCooldown2 = !Skill2.Instance.isCooldown2;
-        GameObject.Find("3arrows").GetComponent<Button>().interactable = false;
-    }
-    public void onClickGen()
-    {
-        isbomb = true;
-        Instantiate(generade, transform.position, Quaternion.identity);
-        Skill3.Instance.isCooldown3 = !Skill3.Instance.isCooldown3;
-        GameObject.Find("explosion").GetComponent<Button>().interactable = false;
-    }
-    
 
-    public void Movement()
+    private IEnumerator DashCoroutine()
+    {
+        float dashSpeed = 10f;
+        float dashDuration = 0.5f;
+        float dashCooldown = 1f;
+
+        float startTime = Time.time;
+        float endTime = startTime + dashDuration;
+
+        activeMoveSpeed = dashSpeed;
+
+        while (Time.time < endTime)
+        {
+            Movement();
+            yield return null;
+        }
+
+        activeMoveSpeed = moveSpeed;
+
+        float cooldownStartTime = Time.time;
+        float cooldownEndTime = cooldownStartTime + dashCooldown;
+
+        while (Time.time < cooldownEndTime)
+        {
+            yield return null;
+        }
+
+        GameObject.Find("Dash").GetComponent<Button>().interactable = true;
+    }
+
+    private void Update()
+    {
+        Movement();
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            onClickDash();
+        }
+        else if (Input.GetKeyDown(KeyCode.J))
+        {
+            onClickGen();
+        }
+        else if (Input.GetKeyDown(KeyCode.K))
+        {
+            onClickMutiple();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        rb.MovePosition(rb.position + movement * activeMoveSpeed * Time.fixedDeltaTime);
+    }
+
+    private void Movement()
     {
         float mx = Input.GetAxisRaw("Horizontal");
         float my = Input.GetAxisRaw("Vertical");
 
         movement = new Vector2(mx, my).normalized;
-        
     }
 
-    public void Start()
+    private void rotateToTarget(Enemy enemy)
     {
-        
-    }
-        public void Update() {
-        Movement();
-        closet();
-        dash();
-        if (Input.GetKeyDown(KeyCode.H) && isdash == false)
-        {
-            onClickDash();
-        }
-        else if (Input.GetKeyDown(KeyCode.J) && isbomb == false)
-        {
-            onClickGen();
-        }
-        else if (Input.GetKeyDown(KeyCode.K) && isbomb == false)
-        {
-            onClickMutiple();
-
-        }
-    }
-    private void FixedUpdate()
-    {
-        rb.MovePosition(rb.position + movement * activeMoveSpeed * Time.deltaTime);
-    }
-    void dash()
-    {
-        if (isdash == true)
-        {
-            if (dashCoolCounter <= 0 && dashCounter <= 0)
-            {
-                activeMoveSpeed = dashSpeed;
-                dashCounter = dashLength;
-            }
-        }
-        if (dashCounter > 0)
-        {
-            dashCounter -= Time.deltaTime;
-            if (dashCounter <= 0)
-            {
-                activeMoveSpeed = moveSpeed;
-                dashCoolCounter = dashCooldown;
-            }
-        }
-        if (dashCoolCounter > 0)
-        {
-            dashCoolCounter -= Time.deltaTime;
-        }
-
-        isdash = false;
-    }
-    void rotateToTarget(Enemy enemy)
-    {
-        if (player != null && enemy!= null)
+        if (player != null && enemy != null)
         {
             Vector3 vectorToTarget = player.transform.position - enemy.transform.position;
             float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg + 180f;
-            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 10f);
+            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
     }
+
     public void closet()
     {
-    
-        float distanceToClosestEnemy = Mathf.Infinity;
-        Enemy closestEnemy = null;
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
+
+        float distanceToClosestEnemy = Mathf.Infinity;
+        Enemy closestEnemy = null;
+
         foreach (Enemy currentEnemy in allEnemies)
         {
-            currentEnemy.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0.12f, 0f);
+            SpriteRenderer enemySpriteRenderer = currentEnemy.transform.GetChild(0).GetComponent<SpriteRenderer>();
+            enemySpriteRenderer.color = new Color(1f, 0f, 0.12f, 0f);
+
             float distanceToEnemy = (currentEnemy.transform.position - player.transform.position).sqrMagnitude;
             if (distanceToEnemy < distanceToClosestEnemy && distanceToEnemy != 0)
             {
@@ -146,17 +115,30 @@ public class PlayerMovement : MonoBehaviour {
                 closestEnemy = currentEnemy;
             }
         }
-        if (closestEnemy != null)
-            closestEnemy.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0.12f, 0.8f);
 
-        rotateToTarget(closestEnemy);
+        if (closestEnemy != null)
+        {
+            SpriteRenderer closestEnemySpriteRenderer = closestEnemy.transform.GetChild(0).GetComponent<SpriteRenderer>();
+            closestEnemySpriteRenderer.color = new Color(1f, 0f, 0.12f, 0.8f);
+            rotateToTarget(closestEnemy);
+        }
+    }
+
+    public void onClickGen()
+    {
+        Instantiate(grenade, transform.position, Quaternion.identity);
+        Skill3.Instance.isCooldown3 = !Skill3.Instance.isCooldown3;
+        GameObject.Find("explosion").GetComponent<Button>().interactable = false;
+    }
+
+    public void onClickMutiple()
+    {
+        Skill2.Instance.isCooldown2 = !Skill2.Instance.isCooldown2;
+        GameObject.Find("3arrows").GetComponent<Button>().interactable = false;
     }
 
     public void AddSpeed()
     {
-        this.moveSpeed *= 1.1f;
+        moveSpeed *= 1.1f;
     }
 }
-   
-
-

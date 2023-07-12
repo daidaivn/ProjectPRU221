@@ -3,86 +3,80 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerAttack : MonoBehaviour {
-    [SerializeField] GameObject ArrowPrefab;
-	[SerializeField] SpriteRenderer ArrowGFX;
-	[SerializeField] Transform Bow;
-    public GameObject player;
-
-    
-	[SerializeField] float BowPower;
+public class PlayerAttack : MonoBehaviour
+{
+    [SerializeField] GameObject arrowPrefab;
+    [SerializeField] SpriteRenderer arrowGFX;
+    [SerializeField] Transform bow;
+    [SerializeField] float bowPower;
 
     [SerializeField] public AudioSource arrow;
-	
-	float BowCharge;
-	bool CanFire = true;
-    float nextFire = 0;
+
+    private bool canFire = true;
+    private float nextFire = 0;
 
     private void Awake()
     {
         SoundManager.Instance.AddToAudio(arrow);
     }
 
-    private void Start() {
-	
-	}
-
-	private void Update() {
-        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
-        if (allEnemies != null && Time.time > nextFire)
+    private void Update()
+    {
+        if (Time.time > nextFire && canFire)
         {
             FireBow();
-            nextFire = Time.time + 0.5f;
         }
     }
 
-    public void FireBow() {
-        ArrowGFX.enabled = true;
-        BowCharge += Time.deltaTime;
+    private void FireBow()
+    {
+        arrowGFX.enabled = true;
 
-        float ArrowSpeed = 0.5f + BowPower;
-		float ArrowDamage = 0.5f * BowPower;
+        float arrowSpeed = 0.5f + bowPower;
+        float arrowDamage = 0.5f * bowPower;
 
         Enemy closestEnemy = FindClosestEnemy();
         if (closestEnemy != null)
         {
+            Vector3 direction = closestEnemy.transform.position - transform.position;
+            Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
 
-            Vector3 vectorToTarget = player.transform.position - closestEnemy.transform.position;
-
-            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg + 90f;
-            Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            Arrow Arrow = Instantiate(ArrowPrefab, Bow.position, rot).GetComponent<Arrow>();
-            Arrow.ArrowVelocity = ArrowSpeed;
-            Arrow.ArrowDamage = ArrowDamage;
+            GameObject newArrow = Instantiate(arrowPrefab, bow.position, rotation);
+            Arrow arrowScript = newArrow.GetComponent<Arrow>();
+            arrowScript.ArrowVelocity = arrowSpeed;
+            arrowScript.ArrowDamage = arrowDamage;
 
             SoundManager.Instance.Play(arrow);
-            CanFire = false;
-            ArrowGFX.enabled = false;
+
+            canFire = false;
+            arrowGFX.enabled = false;
+            nextFire = Time.time + 0.5f;
         }
     }
+
     public void LevelUp()
     {
-        this.BowPower *= 1.1f;
+        bowPower *= 1.1f;
     }
-    Enemy FindClosestEnemy()
-    {
-        float distanceToClosestEnemy = Mathf.Infinity;
-        Enemy closestEnemy = null;
-        Enemy[] allEnemies = GameObject.FindObjectsOfType<Enemy>();
-        player = GameObject.FindGameObjectWithTag("Player");
 
-        if(allEnemies!=null) { 
-        foreach (Enemy currentEnemy in allEnemies)
+    private Enemy FindClosestEnemy()
+    {
+        Enemy[] allEnemies = GameObject.FindObjectsOfType<Enemy>();
+
+        float closestDistance = Mathf.Infinity;
+        Enemy closestEnemy = null;
+        Vector3 playerPosition = transform.position;
+
+        foreach (Enemy enemy in allEnemies)
         {
-            float distanceToEnemy = (currentEnemy.transform.position - player.transform.position).sqrMagnitude;
-            if (distanceToEnemy < distanceToClosestEnemy)
+            float distance = Vector3.Distance(playerPosition, enemy.transform.position);
+            if (distance < closestDistance)
             {
-                distanceToClosestEnemy = distanceToEnemy;
-                closestEnemy = currentEnemy;
+                closestDistance = distance;
+                closestEnemy = enemy;
             }
         }
-        }
+
         return closestEnemy;
     }
 }
