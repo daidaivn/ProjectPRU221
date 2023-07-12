@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - explosion
+  - DASH
+  - HUD
+  - Wall1
+  - 3arrows
+  - shield
+  - SURFING
   layers:
   - Default
   - TransparentFX
