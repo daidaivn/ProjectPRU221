@@ -516,7 +516,7 @@ GameObject:
   - component: {fileID: 327639745}
   - component: {fileID: 327639746}
   m_Layer: 0
-  m_Name: EXP
+  m_Name: SpawnMana
   m_TagString: ExperienceItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2460,7 +2460,7 @@ GameObject:
   - component: {fileID: 517103234}
   - component: {fileID: 517103236}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2496,6 +2496,7 @@ Transform:
   - {fileID: 1793038599}
   - {fileID: 327799947}
   - {fileID: 81151733}
+  - {fileID: 1393562353}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2761,7 +2762,7 @@ GameObject:
   - component: {fileID: 630849554}
   - component: {fileID: 630849556}
   m_Layer: 0
-  m_Name: Ground
+  m_Name: SpwanCellMap
   m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19697,6 +19698,58 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1393562352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1393562353}
+  - component: {fileID: 1393562354}
+  m_Layer: 0
+  m_Name: SpawnItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1393562353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393562352}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 517103235}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1393562354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393562352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2338b2c438c432d42a5c62da13b33b15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefabs:
+  - {fileID: 5514194882597365056, guid: 2c35162a7254c4b4e9c3c800fd2ebc4c, type: 3}
+  character: {fileID: 519420032}
+  spawnIntervalMin: 5
+  spawnIntervalMax: 10
+  minDistance: 11
+  maxDistance: 30
+  despawnDistance: 60
 --- !u!1 &1446321552
 GameObject:
   m_ObjectHideFlags: 0

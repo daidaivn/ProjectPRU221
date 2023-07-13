@@ -13,6 +13,7 @@ TagManager:
   - HUD2
   - shield
   - ExperienceItem
+  - Boom
   layers:
   - Default
   - TransparentFX
@@ -52,6 +53,9 @@ TagManager:
     locked: 0
   - name: MapLayer
     uniqueID: 3194234675
+    locked: 0
+  - name: Item
+    uniqueID: 3899004855
     locked: 0
   - name: Default
     uniqueID: 0
