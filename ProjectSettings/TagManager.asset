@@ -13,6 +13,7 @@ TagManager:
   - HUD2
   - shield
   - ExperienceItem
+  - Pill
   layers:
   - Default
   - TransparentFX

@@ -5,40 +5,60 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Unity.Burst.Intrinsics.X86.Sse4_2;
 
-public class PlayerHealth : MonoBehaviour {
+public class PlayerHealth : MonoBehaviour
+{
     private float health = 0f;
-	[SerializeField] private float maxHealth = 100f;
-	[SerializeField] private Slider healthSlider;
+    private int maxSpecial = 3;
+    private int special = 0;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider specialSlider;
     [SerializeField] public GameObject gamover;
     private bool shiel = false;
     public GameObject shied;
     [SerializeField] public AudioSource audioSource;
     [SerializeField]
     TextMeshProUGUI healthText;
-    private void Start() {
-		health = maxHealth;
-		healthSlider.maxValue = maxHealth;
+    [SerializeField]
+    TextMeshProUGUI specialText;
+    private void Start()
+    {
+        health = maxHealth;
+        healthSlider.maxValue = maxHealth;
+        specialSlider.maxValue = maxSpecial;
         gamover.SetActive(false);
         SoundManager.Instance.AddToAudio(audioSource);
     }
 
     public void Shield()
     {
-        if (!shiel )
+        if (!shiel)
         {
             SoundManager.Instance.Play(audioSource);
             shied.SetActive(true);
             shiel = true;
             Invoke("Noshield", 3f);
         }
-        if(Skill4.Instance!=null)
-        Skill4.Instance.isCooldown4 = !Skill4.Instance.isCooldown4;
+        if (Skill4.Instance != null)
+            Skill4.Instance.isCooldown4 = !Skill4.Instance.isCooldown4;
         GameObject.Find("Shield").GetComponent<Button>().interactable = false;
     }
     public void Noshield()
     {
         shied.SetActive(false);
         shiel = false;
+    }
+    public int getSpecialValue()
+    {
+
+        return special;
+
+    }
+    public int getMaxSpecialValue()
+    {
+
+        return maxSpecial;
+
     }
     public float GetMaxHealth()
     {
@@ -48,16 +68,21 @@ public class PlayerHealth : MonoBehaviour {
     {
         return health;
     }
-    public void UpdateHealth(float mod) {
-		if(shiel == false) { 
-		    health += mod;
+    public void UpdateHealth(float mod)
+    {
+        if (shiel == false)
+        {
+            health += mod;
 
-		    if (health > maxHealth) {
-			    health = maxHealth;
-		    } else if (health <= 0f) {
-			    health = 0f;
-			    healthSlider.value = health;
-			    Destroy(gameObject);
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
+            else if (health <= 0f)
+            {
+                health = 0f;
+                healthSlider.value = health;
+                Destroy(gameObject);
                 gamover.SetActive(true);
                 Skill4.Instance.skillImage4.fillAmount = 0;
             }
@@ -65,18 +90,43 @@ public class PlayerHealth : MonoBehaviour {
         healthText.text = GetHealth() + "/" + GetMaxHealth();
     }
 
-   
+    public void addSpecial()
+    {
+        if (this.special < 2)
+        {
+            this.special += 1;
+            specialSlider.value = special;
+            specialText.text = getSpecialValue() + "/" + getMaxSpecialValue();
+        }
+        else
+        {
+            //Process
+            specialSlider.value = 0;
+            specialText.text = "0" + "/" + getMaxSpecialValue();
+        }
+
+    }
 
     public void AddHealth(float x)
-	{
-		this.maxHealth += x;
-		this.health += x;
-		healthSlider.maxValue = this.maxHealth;
+    {
+        this.maxHealth += x;
+        this.health += x;
+        healthSlider.maxValue = this.maxHealth;
         healthText.text = GetHealth() + "/" + GetMaxHealth();
     }
 
-	private void OnGUI() {
-		float t = Time.deltaTime / 1f;
-		healthSlider.value = Mathf.Lerp(healthSlider.value, health, t);
-	}
+    private void OnGUI()
+    {
+        float t = Time.deltaTime / 1f;
+        healthSlider.value = Mathf.Lerp(healthSlider.value, health, t);
+
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Pill"))
+        {
+            Destroy(other.gameObject);
+            addSpecial();
+        }
+    }
 }
