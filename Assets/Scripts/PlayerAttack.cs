@@ -5,78 +5,89 @@ using UnityEngine.UI;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] GameObject arrowPrefab;
-    [SerializeField] SpriteRenderer arrowGFX;
-    [SerializeField] Transform bow;
-    [SerializeField] float bowPower;
+    [SerializeField] GameObject ArrowPrefab;
+    [SerializeField] SpriteRenderer ArrowGFX;
+    [SerializeField] Transform Bow;
+    public GameObject player;
+
+
+    [SerializeField] float BowPower;
 
     [SerializeField] public AudioSource arrow;
 
-    private bool canFire = true;
-    private float nextFire = 0;
+    float BowCharge;
+    bool CanFire = true;
+    float nextFire = 0;
 
     private void Awake()
     {
         SoundManager.Instance.AddToAudio(arrow);
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Time.time > nextFire && canFire)
-        {
-            FireBow();
-        }
+
     }
 
-    private void FireBow()
+    private void Update()
     {
-        arrowGFX.enabled = true;
-
-        float arrowSpeed = 0.5f + bowPower;
-        float arrowDamage = 0.5f * bowPower;
-
-        Enemy closestEnemy = FindClosestEnemy();
-        if (closestEnemy != null)
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+        if (allEnemies != null && Time.time > nextFire)
         {
-            Vector3 direction = closestEnemy.transform.position - transform.position;
-            Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
-
-            GameObject newArrow = Instantiate(arrowPrefab, bow.position, rotation);
-            Arrow arrowScript = newArrow.GetComponent<Arrow>();
-            arrowScript.ArrowVelocity = arrowSpeed;
-            arrowScript.ArrowDamage = arrowDamage;
-
-            SoundManager.Instance.Play(arrow);
-
-            canFire = false;
-            arrowGFX.enabled = false;
+            FireBow();
             nextFire = Time.time + 0.5f;
         }
     }
 
+    public void FireBow()
+    {
+        ArrowGFX.enabled = true;
+        BowCharge += Time.deltaTime;
+
+        float ArrowSpeed = 0.5f + BowPower;
+        float ArrowDamage = 0.5f * BowPower;
+
+        Enemy closestEnemy = FindClosestEnemy();
+        if (closestEnemy != null)
+        {
+
+            Vector3 vectorToTarget = player.transform.position - closestEnemy.transform.position;
+
+            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg + 90f;
+            Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            Arrow Arrow = Instantiate(ArrowPrefab, Bow.position, rot).GetComponent<Arrow>();
+            Arrow.ArrowVelocity = ArrowSpeed;
+            Arrow.ArrowDamage = ArrowDamage;
+
+            SoundManager.Instance.Play(arrow);
+            CanFire = false;
+            ArrowGFX.enabled = false;
+        }
+    }
     public void LevelUp()
     {
-        bowPower *= 1.1f;
+        this.BowPower *= 1.1f;
     }
-
-    private Enemy FindClosestEnemy()
+    Enemy FindClosestEnemy()
     {
-        Enemy[] allEnemies = GameObject.FindObjectsOfType<Enemy>();
-
-        float closestDistance = Mathf.Infinity;
+        float distanceToClosestEnemy = Mathf.Infinity;
         Enemy closestEnemy = null;
-        Vector3 playerPosition = transform.position;
+        Enemy[] allEnemies = GameObject.FindObjectsOfType<Enemy>();
+        player = GameObject.FindGameObjectWithTag("Player");
 
-        foreach (Enemy enemy in allEnemies)
+        if (allEnemies != null)
         {
-            float distance = Vector3.Distance(playerPosition, enemy.transform.position);
-            if (distance < closestDistance)
+            foreach (Enemy currentEnemy in allEnemies)
             {
-                closestDistance = distance;
-                closestEnemy = enemy;
+                float distanceToEnemy = (currentEnemy.transform.position - player.transform.position).sqrMagnitude;
+                if (distanceToEnemy < distanceToClosestEnemy)
+                {
+                    distanceToClosestEnemy = distanceToEnemy;
+                    closestEnemy = currentEnemy;
+                }
             }
         }
-
         return closestEnemy;
     }
 }

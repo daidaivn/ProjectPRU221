@@ -3,76 +3,58 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Sse4_2;
 
 public class PlayerHealth : MonoBehaviour
 {
     private float health = 0f;
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private Slider healthSlider;
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private GameObject shieldObject;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private TextMeshProUGUI healthText;
-
-    private bool isShieldActive = false;
-
+    [SerializeField] public GameObject gamover;
+    private bool shiel = false;
+    public GameObject shied;
+    [SerializeField] public AudioSource audioSource;
+    [SerializeField]
+    TextMeshProUGUI healthText;
     private void Start()
     {
         health = maxHealth;
         healthSlider.maxValue = maxHealth;
-        gameOverPanel.SetActive(false);
+        gamover.SetActive(false);
         SoundManager.Instance.AddToAudio(audioSource);
     }
 
-    public void ActivateShield()
+    public void Shield()
     {
-        if (!isShieldActive)
+        if (!shiel)
         {
             SoundManager.Instance.Play(audioSource);
-            shieldObject.SetActive(true);
-            isShieldActive = true;
-            StartCoroutine(DeactivateShieldDelayed(3f));
+            shied.SetActive(true);
+            shiel = true;
+            Invoke("Noshield", 3f);
         }
-
         if (Skill4.Instance != null)
-        {
             Skill4.Instance.isCooldown4 = !Skill4.Instance.isCooldown4;
-        }
-
-        GameObject shieldButton = GameObject.Find("Shield");
-        if (shieldButton != null)
-        {
-            shieldButton.GetComponent<Button>().interactable = false;
-        }
+        GameObject.Find("Shield").GetComponent<Button>().interactable = false;
     }
-
-    private IEnumerator DeactivateShieldDelayed(float delay)
+    public void Noshield()
     {
-        yield return new WaitForSeconds(delay);
-        DeactivateShield();
+        shied.SetActive(false);
+        shiel = false;
     }
-
-    private void DeactivateShield()
-    {
-        shieldObject.SetActive(false);
-        isShieldActive = false;
-    }
-
     public float GetMaxHealth()
     {
         return maxHealth;
     }
-
     public float GetHealth()
     {
         return health;
     }
-
-    public void UpdateHealth(float modifier)
+    public void UpdateHealth(float mod)
     {
-        if (!isShieldActive)
+        if (shiel == false)
         {
-            health += modifier;
+            health += mod;
 
             if (health > maxHealth)
             {
@@ -83,23 +65,24 @@ public class PlayerHealth : MonoBehaviour
                 health = 0f;
                 healthSlider.value = health;
                 Destroy(gameObject);
-                gameOverPanel.SetActive(true);
+                gamover.SetActive(true);
                 Skill4.Instance.skillImage4.fillAmount = 0;
             }
         }
-
-        healthText.text = health.ToString() + "/" + maxHealth.ToString();
+        healthText.text = GetHealth() + "/" + GetMaxHealth();
     }
 
-    public void AddHealth(float value)
+
+
+    public void AddHealth(float x)
     {
-        maxHealth += value;
-        health += value;
-        healthSlider.maxValue = maxHealth;
-        healthText.text = health.ToString() + "/" + maxHealth.ToString();
+        this.maxHealth += x;
+        this.health += x;
+        healthSlider.maxValue = this.maxHealth;
+        healthText.text = GetHealth() + "/" + GetMaxHealth();
     }
 
-    private void Update()
+    private void OnGUI()
     {
         float t = Time.deltaTime / 1f;
         healthSlider.value = Mathf.Lerp(healthSlider.value, health, t);
