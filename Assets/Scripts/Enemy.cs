@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
 
     private bool explosion;
 
+    private bool isFrozen = false;
+
     private Transform target;
     private Transform target2;
     [SerializeField] private Sprite[] sprites;
@@ -31,6 +33,27 @@ public class Enemy : MonoBehaviour
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
        
     }
+
+    public void Freeze()
+    {
+        if (!isFrozen)
+        {
+            isFrozen = true;
+            StartCoroutine(FreezeCoroutine());
+        }
+    }
+
+    private IEnumerator FreezeCoroutine()
+    {
+        float originalSpeed = this.speed;
+        speed = 0f;
+
+        yield return new WaitForSeconds(3f);
+
+        speed = originalSpeed;
+        isFrozen = false;
+    }
+
     public void HealthLevel()
     {
         health += 10f;

@@ -56,7 +56,16 @@ public class PlayerMovement : MonoBehaviour {
         Skill3.Instance.isCooldown3 = !Skill3.Instance.isCooldown3;
         GameObject.Find("explosion").GetComponent<Button>().interactable = false;
     }
-    
+    public void onClickFreeze()
+    {
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+        foreach (var Enemy in allEnemies)
+        {
+            Enemy.Freeze();
+        }
+        FreezeSkill.Instance.isCooldownFreeze = !FreezeSkill.Instance.isCooldownFreeze;
+        GameObject.Find("Freeze").GetComponent<Button>().interactable = false;
+    }
 
     public void Movement()
     {
