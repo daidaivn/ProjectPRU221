@@ -66,7 +66,13 @@ public class PlayerMovement : MonoBehaviour {
         FreezeSkill.Instance.isCooldownFreeze = !FreezeSkill.Instance.isCooldownFreeze;
         GameObject.Find("Freeze").GetComponent<Button>().interactable = false;
     }
-
+    public void onClickRapidFire()
+    {
+        PlayerAttack playerAttack = FindObjectOfType<PlayerAttack>();
+        playerAttack.RapidFire();
+        RapidFireSkill.Instance.isCooldownRapid = !RapidFireSkill.Instance.isCooldownRapid;
+        GameObject.Find("Rapid").GetComponent<Button>().interactable = false;
+    }
     public void Movement()
     {
         float mx = Input.GetAxisRaw("Horizontal");

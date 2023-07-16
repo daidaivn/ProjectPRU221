@@ -17,6 +17,8 @@ public class PlayerAttack : MonoBehaviour {
 	float BowCharge;
 	bool CanFire = true;
     float nextFire = 0;
+    float fireRate;
+    bool isRapid = false;
 
     private void Awake()
     {
@@ -28,6 +30,15 @@ public class PlayerAttack : MonoBehaviour {
 	}
 
 	private void Update() {
+        if (!isRapid)
+        {
+            this.fireRate = Time.time + 0.5f;
+        }
+        else
+        {
+            this.fireRate = Time.time + 0.2f;
+        }
+
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         if (allEnemies != null && Time.time > nextFire)
         {
@@ -35,7 +46,19 @@ public class PlayerAttack : MonoBehaviour {
             nextFire = Time.time + 0.5f;
         }
     }
-
+    public void RapidFire()
+    {
+        if (!isRapid)
+        {
+            isRapid = true;
+            StartCoroutine(RapidCoroutine());
+        }
+    }
+    private IEnumerator RapidCoroutine()
+    {
+        yield return new WaitForSeconds(5f);
+        isRapid = false;
+    }
     public void FireBow() {
         ArrowGFX.enabled = true;
         BowCharge += Time.deltaTime;

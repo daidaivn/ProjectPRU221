@@ -15,6 +15,7 @@ TagManager:
   - ExperienceItem
   - Pill
   - FREEZE
+  - RAPID
   layers:
   - Default
   - TransparentFX
