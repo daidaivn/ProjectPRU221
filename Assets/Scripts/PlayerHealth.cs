@@ -7,9 +7,11 @@ using static Unity.Burst.Intrinsics.X86.Sse4_2;
 
 public class PlayerHealth : MonoBehaviour
 {
+    public static PlayerHealth Instance { get; private set; }
     private float health = 0f;
     private int maxSpecial = 3;
     private int special = 0;
+    private bool isCharged = false;
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider specialSlider;
@@ -54,6 +56,24 @@ public class PlayerHealth : MonoBehaviour
         return special;
 
     }
+    public bool getIsCharge()
+    {
+
+        return this.isCharged;
+
+    }
+    public void setIsCharge(bool charge)
+    {
+
+        this.isCharged = charge;
+
+    }
+    public void setSpecialValue(int special)
+    {
+
+        this.special = special;
+
+    }
     public int getMaxSpecialValue()
     {
 
@@ -92,7 +112,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void addSpecial()
     {
-        if (this.special < 2)
+        if (this.special < 3)
         {
             this.special += 1;
             specialSlider.value = special;
@@ -101,8 +121,10 @@ public class PlayerHealth : MonoBehaviour
         else
         {
             //Process
-            specialSlider.value = 0;
-            specialText.text = "0" + "/" + getMaxSpecialValue();
+            this.special = 3;
+            this.isCharged = true;
+            specialSlider.value = 3;
+            specialText.text = "3" + "/" + getMaxSpecialValue();
         }
 
     }

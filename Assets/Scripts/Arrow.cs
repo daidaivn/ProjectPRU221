@@ -17,7 +17,7 @@ public class Arrow : MonoBehaviour {
 
 	private void OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "Enemy") {
-			Debug.Log("Enemy Attacked");
+//			Debug.Log("Enemy Attacked");
 			Enemy enemy = other.gameObject.GetComponent<Enemy>();
 			enemy.TakeDamage(ArrowDamage);
 		}

@@ -29,7 +29,8 @@ public class PlayerAttack : MonoBehaviour {
 	
 	}
 
-	private void Update() {
+    private void Update()
+    {
         if (!isRapid)
         {
             this.fireRate = Time.time + 0.5f;
@@ -42,8 +43,9 @@ public class PlayerAttack : MonoBehaviour {
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         if (allEnemies != null && Time.time > nextFire)
         {
+            Debug.Log("FireRate = " + (this.fireRate - Time.time));
             FireBow();
-            nextFire = Time.time + 0.5f;
+            nextFire = fireRate;
         }
     }
     public void RapidFire()
@@ -54,6 +56,7 @@ public class PlayerAttack : MonoBehaviour {
             StartCoroutine(RapidCoroutine());
         }
     }
+
     private IEnumerator RapidCoroutine()
     {
         yield return new WaitForSeconds(5f);
