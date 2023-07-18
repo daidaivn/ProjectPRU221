@@ -72,6 +72,16 @@ public class PlayerHealth : MonoBehaviour
     {
 
         this.special = special;
+        specialSlider.value = special;
+        specialText.text = getSpecialValue() + "/" + getMaxSpecialValue();
+        if (special == 3)
+        {
+            setIsCharge(true);
+        }
+        else
+        {
+            setIsCharge(false);
+        }
 
     }
     public int getMaxSpecialValue()
@@ -114,17 +124,12 @@ public class PlayerHealth : MonoBehaviour
     {
         if (this.special < 3)
         {
-            this.special += 1;
-            specialSlider.value = special;
-            specialText.text = getSpecialValue() + "/" + getMaxSpecialValue();
+            setSpecialValue(this.special += 1);
         }
         else
         {
             //Process
-            this.special = 3;
-            this.isCharged = true;
-            specialSlider.value = 3;
-            specialText.text = "3" + "/" + getMaxSpecialValue();
+            setSpecialValue(3);
         }
 
     }

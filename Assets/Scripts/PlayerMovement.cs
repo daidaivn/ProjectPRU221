@@ -73,6 +73,19 @@ public class PlayerMovement : MonoBehaviour {
         RapidFireSkill.Instance.isCooldownRapid = !RapidFireSkill.Instance.isCooldownRapid;
         GameObject.Find("Rapid").GetComponent<Button>().interactable = false;
     }
+    public void onClickBigBoom()
+    {
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+        foreach (var Enemy in allEnemies)
+        {
+            Enemy.TakeDamageBomb(99999f);
+        }
+        BigBoomSkill.Instance.isLockSkillBigBoom = !BigBoomSkill.Instance.isLockSkillBigBoom;
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        playerHealth.setIsCharge(false);
+        playerHealth.setSpecialValue(0);
+        GameObject.Find("BigBoom").GetComponent<Button>().interactable = false;
+    }
     public void Movement()
     {
         float mx = Input.GetAxisRaw("Horizontal");

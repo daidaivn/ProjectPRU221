@@ -16,6 +16,7 @@ TagManager:
   - Pill
   - FREEZE
   - RAPID
+  - BIGBOOM
   layers:
   - Default
   - TransparentFX
