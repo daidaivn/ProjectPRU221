@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
     private IEnumerator FreezeCoroutine()
     {
         float originalSpeed = this.speed;
-        speed = 0f;
+        //speed = 0f;
 
         yield return new WaitForSeconds(3f);
 
@@ -81,7 +81,7 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator SpeedBoostCoroutine()
     {
-        speed = 0f;
+        //speed = 0f;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(255f, 0f, 1, 1);
         yield return new WaitForSeconds(3f);
         speed = 3f;
