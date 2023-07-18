@@ -2389,8 +2389,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 516149729}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
+  m_LocalPosition: {x: 0.598, y: -0.005, z: 0}
+  m_LocalScale: {x: 1.0606, y: 0.09044, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2067742435}
@@ -2437,7 +2437,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: -1228767104509799492, guid: cf83df6fc24c94f3c97487429a985eb1, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 05e526f3da04457499ddd9f6b882fcdf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -2516,7 +2516,7 @@ MonoBehaviour:
   tileSize: 1
   viewDistance: 10
   parentContainer: {fileID: 81151732}
-  spawnedObjectsGroup: {fileID: 81151732}
+  spawnedObjectsFolder: {fileID: 0}
   obstaclePrefabs:
   - {fileID: 6799732957273524559, guid: 3ccac6e5da9f7f94b8d18b2a850150e8, type: 3}
   - {fileID: 4299843757100388503, guid: d44d238d8b17bb248878b84b8cd0604e, type: 3}
@@ -17544,7 +17544,7 @@ MonoBehaviour:
   tileSize: 1
   viewDistance: 15
   parentContainer: {fileID: 81151732}
-  spawnedObjectsGroup: {fileID: 81151732}
+  spawnedObjectsFolder: {fileID: 0}
   obstaclePrefabs:
   - {fileID: 4299843757100388503, guid: d44d238d8b17bb248878b84b8cd0604e, type: 3}
   - {fileID: 6799732957273524559, guid: 3ccac6e5da9f7f94b8d18b2a850150e8, type: 3}
@@ -25123,11 +25123,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04a671ef60464075ab7674692c06d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArrowPrefab: {fileID: 4301140955662101467, guid: 2467992377834460d92cdc7e6ccf6bf7, type: 3}
+  ArrowPrefab: {fileID: 3027093867389534875, guid: 0e1ac471b3e46ef4a81d8ae945e3a121, type: 3}
   ArrowGFX: {fileID: 4301140955662101460, guid: 2467992377834460d92cdc7e6ccf6bf7, type: 3}
   Bow: {fileID: 516149730}
   player: {fileID: 1892102826}
-  BowPower: 20
+  BowPower: 5
   arrow: {fileID: 1892102836}
 --- !u!114 &1892102835
 MonoBehaviour:

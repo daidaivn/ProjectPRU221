@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator SpeedBoostCoroutine()
     {
-        speed = 0f;
+        //speed = 0f;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(255f, 0f, 1, 1);
         yield return new WaitForSeconds(3f);
         speed = 3f;
@@ -69,7 +69,6 @@ public class Enemy : MonoBehaviour
     {
         if (health > 0)
         {
-
             health -= dmg;
             Debug.Log("Enemy Health: " + health);
         }
@@ -140,7 +139,7 @@ public class Enemy : MonoBehaviour
             {
 
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                speed = 0f;
+                //speed = 0f;
 
             }
 
