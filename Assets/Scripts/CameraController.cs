@@ -162,7 +162,7 @@ public class CameraController : MonoBehaviour
 
         // Xác suất sinh ra vật cản
         float obstacleProbability = Random.Range(0f, 1f);
-        float obstacleSpawnChance = 0.2f; // Xác suất sinh ra vật cản (vd: 20%)
+        float obstacleSpawnChance = 0.8f; // Xác suất sinh ra vật cản (vd: 20%)
 
         if (obstacleProbability <= obstacleSpawnChance)
         {
