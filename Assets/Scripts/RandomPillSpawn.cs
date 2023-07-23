@@ -61,7 +61,7 @@ public class RandomPillSpawn : MonoBehaviour
 
     private void DestroyObjectsFarFromPlayer()
     {
-        GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("SpawnedObject");
+        GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("Pill");
 
         foreach (GameObject spawnedObject in spawnedObjects)
         {
