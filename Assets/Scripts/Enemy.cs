@@ -30,7 +30,14 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         health = maxHealth;
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        try
+        {
+            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("Game Over");
+        }
 
     }
 
@@ -133,8 +140,16 @@ public class Enemy : MonoBehaviour
         {
             if (attackSpeed <= canAttack)
             {
-                other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
-                canAttack = 0f;
+                try
+                {
+                    other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
+                    canAttack = 0f;
+                }
+                catch (System.Exception)
+                {
+
+                    Debug.Log("Game Over");
+                }
             }
             else
             {

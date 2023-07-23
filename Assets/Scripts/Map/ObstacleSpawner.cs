@@ -10,7 +10,9 @@ public class ObstacleSpawner : MonoBehaviour
     public float minDistance = 3f; // Khoảng cách tối thiểu từ người chơi đến đối tượng mới
     public float maxDistanceFromPlayer = 30f; // Khoảng cách tối đa từ vật thể đến nhân vật trước khi bị xóa
     public int numObjectsToSpawn = 1; // Số lượng vật cản được sinh ra trong mỗi lần cập nhật
+    public int maxNumObjects = 10; // Số lượng vật cản tối đa được phép có trong cùng một thời điểm
     private List<GameObject> objectPool = new List<GameObject>(); // Object Pool cho vật cản
+    private int numSpawnedObjects = 0; // Biến đếm số lượng vật cản đã được sinh ra
 
     private void Start()
     {
@@ -23,7 +25,8 @@ public class ObstacleSpawner : MonoBehaviour
         DestroyObjectsFarFromPlayer();
 
         // Tạo mới số lượng vật thể được chỉ định
-        for (int i = 0; i < numObjectsToSpawn; i++)
+        int numObjectsToSpawnThisUpdate = Mathf.Min(numObjectsToSpawn, maxNumObjects - numSpawnedObjects);
+        for (int i = 0; i < numObjectsToSpawnThisUpdate; i++)
         {
             GenerateObject();
         }
@@ -49,13 +52,22 @@ public class ObstacleSpawner : MonoBehaviour
         // Tính toán vị trí mới dựa vào hướng và khoảng cách ngẫu nhiên
         Vector2 randomPosition = (Vector2)playerTransform.position + randomDirection * randomDistance;
 
-        // Lấy một vật cản từ Object Pool
+        // Lấy một vật cản từ Object Pool hoặc tạo mới nếu không có sẵn
         GameObject newObject = GetPooledObject();
-        if (newObject != null)
+        if (newObject == null)
         {
-            newObject.transform.position = randomPosition;
-            newObject.SetActive(true);
+            // Tạo một vật cản mới nếu không có sẵn trong Object Pool
+            int randomIndex = Random.Range(0, objectPrefabs.Length);
+            newObject = Instantiate(objectPrefabs[randomIndex]);
+            objectPool.Add(newObject);
         }
+
+        // Đặt lại vị trí và kích hoạt vật cản
+        newObject.transform.position = randomPosition;
+        newObject.SetActive(true);
+
+        // Tăng biến đếm số lượng vật cản đã sinh ra
+        numSpawnedObjects++;
     }
 
     private void DestroyObjectsFarFromPlayer()
@@ -66,10 +78,20 @@ public class ObstacleSpawner : MonoBehaviour
             GameObject obj = objectPool[i];
             if (obj.activeInHierarchy)
             {
-                if (Vector2.Distance(playerTransform.position, obj.transform.position) > maxDistanceFromPlayer)
+                try
                 {
-                    obj.SetActive(false);
+                    if (Vector2.Distance(playerTransform.position, obj.transform.position) > maxDistanceFromPlayer)
+                    {
+                        obj.SetActive(false);
+                        // Giảm biến đếm số lượng vật cản đã sinh ra
+                        numSpawnedObjects--;
+                    }
                 }
+                catch (System.Exception)
+                {
+                    Debug.Log("Game Over");
+                }
+                
             }
         }
     }
