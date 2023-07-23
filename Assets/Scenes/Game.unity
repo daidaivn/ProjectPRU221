@@ -10380,6 +10380,7 @@ MonoBehaviour:
   prefabBall: {fileID: 7464608448650086265, guid: 16f2fc334a3c7d24aaaecff3f767f599, type: 3}
   scoreText: {fileID: 464626524}
   level: {fileID: 1562842307}
+  randomMap: {fileID: 81151733}
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27682,10 +27683,12 @@ MonoBehaviour:
   - {fileID: 2829952369379200554, guid: 4222ff29ab446b940acb87ee05f75c23, type: 3}
   - {fileID: 3873280378908158269, guid: 4fa48a108395608419d7946b00200735, type: 3}
   playerTransform: {fileID: 1892102828}
+  randomMap: {fileID: 81151733}
   maxDistance: 30
   minDistance: 5
   maxDistanceFromPlayer: 30
   numObjectsToSpawn: 20
+  maxNumObjects: 10
 --- !u!224 &635587969
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27703,7 +27706,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.18, y: -0.06}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &637177542
@@ -34837,6 +34840,7 @@ MonoBehaviour:
   minDistance: 5
   objectInterval: 20
   maxDistanceFromPlayer: 30
+  randomMap: {fileID: 81151732}
 --- !u!1 &1027326598
 GameObject:
   m_ObjectHideFlags: 0
@@ -49471,6 +49475,7 @@ MonoBehaviour:
   player: {fileID: 1892102826}
   BowPower: 20
   arrow: {fileID: 1892102836}
+  randomMap: {fileID: 81151733}
 --- !u!114 &1892102835
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,14 +13,15 @@ public class BallSpawner : MonoBehaviour
     TextMeshProUGUI scoreText;
     [SerializeField]
     TextMeshProUGUI level;
-
+    public Transform randomMap;
     Timer spawnTimer;
 
     int minSpawnX;
     int minSpawnY;
     int maxSpawnX;
     int maxSpawnY;
-    // Start is called before the first frame update
+
+
     void Start()
     {
         var width = Screen.width - 100;
@@ -33,9 +34,9 @@ public class BallSpawner : MonoBehaviour
         spawnTimer = gameObject.AddComponent<Timer>();
         spawnTimer.Duration = 5;
         spawnTimer.Run();
+
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (spawnTimer.Finished)
@@ -49,14 +50,16 @@ public class BallSpawner : MonoBehaviour
     bool check = false;
     public void SpawnBear()
     {
-
         int score = Convert.ToInt32(Regex.Replace("0" + scoreText.text, "\\D+", ""));
         Vector3 Location = new Vector3(UnityEngine.Random.Range(minSpawnX, maxSpawnX), UnityEngine.Random.Range(minSpawnY, maxSpawnY), -Camera.main.transform.position.z);
         Vector3 worldLocation = Camera.main.ScreenToWorldPoint(Location);
 
-
         GameObject ball = Instantiate(prefabBall) as GameObject;
         ball.GetComponent<Enemy>().HealthLevel();
+
+        // Đặt "RandomMap" là cha của các vật thể sinh ra
+        ball.transform.SetParent(randomMap.transform);
+
         ball.transform.position = worldLocation;
         var ilevel = Convert.ToInt32(Regex.Replace("0" + level.text, "\\D+", ""));
         if (score >= 20 && score % 5 == 4)
@@ -69,7 +72,6 @@ public class BallSpawner : MonoBehaviour
             var gobs = GameObject.FindGameObjectsWithTag("Enemy");
             var x = gobs[gobs.Length - 1];
             x.GetComponent<Enemy>().Upgrade(score);
-
         }
         if (score / 20f > ilevel)
         {

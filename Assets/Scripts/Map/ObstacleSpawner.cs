@@ -6,11 +6,14 @@ public class ObstacleSpawner : MonoBehaviour
 {
     public GameObject[] objectPrefabs; // Mảng Prefab của các vật cản
     public Transform playerTransform;
+    public Transform randomMap; // Thêm Transform cho RandomMap
+
     public float maxDistance = 8f; // Khoảng cách tối đa từ người chơi đến đối tượng mới
     public float minDistance = 3f; // Khoảng cách tối thiểu từ người chơi đến đối tượng mới
     public float maxDistanceFromPlayer = 30f; // Khoảng cách tối đa từ vật thể đến nhân vật trước khi bị xóa
     public int numObjectsToSpawn = 1; // Số lượng vật cản được sinh ra trong mỗi lần cập nhật
     public int maxNumObjects = 10; // Số lượng vật cản tối đa được phép có trong cùng một thời điểm
+
     private List<GameObject> objectPool = new List<GameObject>(); // Object Pool cho vật cản
     private int numSpawnedObjects = 0; // Biến đếm số lượng vật cản đã được sinh ra
 
@@ -64,6 +67,10 @@ public class ObstacleSpawner : MonoBehaviour
 
         // Đặt lại vị trí và kích hoạt vật cản
         newObject.transform.position = randomPosition;
+
+        // Đặt vật thể mới sinh ra là con của RandomMap để gộp chúng lại
+        newObject.transform.parent = randomMap;
+
         newObject.SetActive(true);
 
         // Tăng biến đếm số lượng vật cản đã sinh ra
@@ -91,7 +98,7 @@ public class ObstacleSpawner : MonoBehaviour
                 {
                     Debug.Log("Game Over");
                 }
-                
+
             }
         }
     }

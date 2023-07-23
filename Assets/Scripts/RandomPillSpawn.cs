@@ -5,25 +5,53 @@ public class RandomPillSpawn : MonoBehaviour
 {
     public GameObject objectPrefab;
     public Transform playerTransform;
-    public float maxDistance = 8f; // Khoảng cách tối đa từ người chơi đến đối tượng mới
-    public float minDistance = 3f; // Khoảng cách tối thiểu từ người chơi đến đối tượng mới
-    public float objectInterval = 20f; // Khoảng thời gian giữa việc sinh ra các đối tượng mới
-    public float maxDistanceFromPlayer = 30f; // Khoảng cách tối đa từ vật thể đến nhân vật trước khi bị xóa
-    private bool isGeneratingObject = false; // Biến đánh dấu xem có thể sinh ra đối tượng mới hay không
-    private float timeSinceLastSpawn = 0f; // Biến đếm thời gian kể từ lần sinh ra đối tượng mới cuối cùng
+    public float maxDistance = 8f;
+    public float minDistance = 3f;
+    public float objectInterval = 20f;
+    public float maxDistanceFromPlayer = 30f;
+    private bool isGeneratingObject = false;
+    private float timeSinceLastSpawn = 0f;
+    // Biến để lưu trữ đối tượng "RandomMap"
+    public GameObject randomMap;
+
+    // Define the variables minSpawnX, maxSpawnX, minSpawnY, and maxSpawnY directly here
+    private int minSpawnX;
+    private int minSpawnY;
+    private int maxSpawnX;
+    private int maxSpawnY;
+
+    // Define the spawnTimer variable
+    private Timer spawnTimer;
+
+    private void Start()
+    {
+        var width = Screen.width - 100;
+        var height = Screen.height - 100;
+        minSpawnX = 0;
+        maxSpawnX = Screen.width;
+        minSpawnY = 0;
+        maxSpawnY = Screen.height;
+
+        // Tìm và lưu trữ đối tượng "RandomMap"
+        randomMap = GameObject.Find("RandomMap");
+
+        // Hoặc gán trực tiếp thông qua giao diện Inspector
+        // randomMap = yourRandomMapGameObject;
+
+        // Initialize the spawnTimer variable
+        spawnTimer = gameObject.AddComponent<Timer>();
+        spawnTimer.Duration = 5;
+        spawnTimer.Run();
+    }
 
     private void Update()
     {
-        // Kiểm tra nếu đã đủ thời gian để sinh ra vật thể mới
         if (timeSinceLastSpawn >= objectInterval && !isGeneratingObject)
         {
             GenerateObject();
         }
 
-        // Cập nhật thời gian kể từ lần sinh ra đối tượng mới cuối cùng
         timeSinceLastSpawn += Time.deltaTime;
-
-        // Xóa các vật thể xa quá người chơi
         DestroyObjectsFarFromPlayer();
     }
 
@@ -37,24 +65,29 @@ public class RandomPillSpawn : MonoBehaviour
         isGeneratingObject = true;
         timeSinceLastSpawn = 0f;
 
-        // Tạo một hướng ngẫu nhiên từ người chơi
-        Vector2 randomDirection = Random.insideUnitCircle.normalized;
-        // Nhân với khoảng cách ngẫu nhiên từ minDistance đến maxDistance
-        float randomDistance = Random.Range(minDistance, maxDistance);
-        // Tính toán vị trí mới dựa vào hướng và khoảng cách ngẫu nhiên
-        Vector2 randomPosition = (Vector2)playerTransform.position + randomDirection * randomDistance;
+        if (playerTransform != null)
+        {
+            Vector2 randomDirection = Random.insideUnitCircle.normalized;
+            float randomDistance = Random.Range(minDistance, maxDistance);
+            Vector2 randomPosition = (Vector2)playerTransform.position + randomDirection * randomDistance;
 
-        // Giới hạn vị trí ngẫu nhiên trong khoảng vùng Camera
-        float screenXMin = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
-        float screenXMax = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
-        float screenYMin = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).y;
-        float screenYMax = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y;
-        randomPosition.x = Mathf.Clamp(randomPosition.x, screenXMin, screenXMax);
-        randomPosition.y = Mathf.Clamp(randomPosition.y, screenYMin, screenYMax);
+            float screenXMin = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
+            float screenXMax = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
+            float screenYMin = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).y;
+            float screenYMax = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y;
+            randomPosition.x = Mathf.Clamp(randomPosition.x, screenXMin, screenXMax);
+            randomPosition.y = Mathf.Clamp(randomPosition.y, screenYMin, screenYMax);
 
-        GameObject newObject = Instantiate(objectPrefab, randomPosition, Quaternion.identity);
-        newObject.tag = "Pill"; // Gán tag "SpawnedObject" cho vật thể mới sinh ra
-        Debug.Log("Object generated at position: " + randomPosition);
+            // Sinh ra đối tượng mới và gán "RandomMap" làm cha
+            GameObject newObject = Instantiate(objectPrefab, randomPosition, Quaternion.identity);
+            newObject.transform.SetParent(randomMap.transform);
+
+            Debug.Log("Object generated at position: " + randomPosition);
+        }
+        else
+        {
+            Debug.LogWarning("PlayerTransform is null. Cannot generate object.");
+        }
 
         isGeneratingObject = false;
     }
@@ -77,7 +110,7 @@ public class RandomPillSpawn : MonoBehaviour
             {
                 Debug.Log("Game Over");
             }
-            
+
         }
     }
 }
