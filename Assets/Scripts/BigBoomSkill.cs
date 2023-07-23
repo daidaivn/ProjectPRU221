@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,16 +6,30 @@ using UnityEngine.UI;
 public class BigBoomSkill : MonoBehaviour
 {
     public static BigBoomSkill Instance { get; private set; }
+
     [Header("BigBoomSkill")]
     public Image bigBoomSkill;
     public bool isLockSkillBigBoom;
     public PlayerHealth playerHealth;
+
+    private void Awake()
+    {
+        // Đảm bảo chỉ có một thể hiện duy nhất của lớp BigBoomSkill
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         this.isLockSkillBigBoom = true;
         playerHealth = FindObjectOfType<PlayerHealth>();
-        Instance = this;
         bigBoomSkill.fillAmount = 0;
         GameObject.Find("BigBoom").GetComponent<Button>().interactable = false;
     }

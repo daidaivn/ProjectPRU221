@@ -3,6 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Interface cho các trạng thái bắn tên cung
+public interface IShootState
+{
+    void FireBow(PlayerAttack playerAttack);
+}
+
+// Trạng thái bình thường của việc bắn tên cung
+public class NormalShootState : IShootState
+{
+    public void FireBow(PlayerAttack playerAttack)
+    {
+        playerAttack.FireBow(0.5f, 0.5f);
+    }
+}
+
+// Trạng thái bắn nhanh của việc bắn tên cung
+public class RapidShootState : IShootState
+{
+    public void FireBow(PlayerAttack playerAttack)
+    {
+        playerAttack.FireBow(0.5f, 0.2f);
+    }
+}
+
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] GameObject ArrowPrefab;
@@ -13,6 +37,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float BowPower;
 
     [SerializeField] public AudioSource arrow;
+    public Transform randomMap;
 
     float BowCharge;
     bool CanFire = true;
@@ -20,8 +45,7 @@ public class PlayerAttack : MonoBehaviour
     float fireRate;
     bool isRapid = false;
 
-    // Biến để lưu trữ đối tượng "RandomMap"
-    public Transform randomMap;
+    private IShootState currentShootState;
 
     private void Awake()
     {
@@ -30,7 +54,8 @@ public class PlayerAttack : MonoBehaviour
 
     private void Start()
     {
-
+        // Khởi tạo trạng thái ban đầu là bình thường
+        currentShootState = new NormalShootState();
     }
 
     private void Update()
@@ -48,7 +73,10 @@ public class PlayerAttack : MonoBehaviour
         if (allEnemies != null && Time.time > nextFire)
         {
             Debug.Log("FireRate = " + (this.fireRate - Time.time));
-            FireBow();
+
+            // Thực hiện bắn tên cung dựa vào trạng thái hiện tại
+            currentShootState.FireBow(this);
+
             nextFire = fireRate;
         }
     }
@@ -68,24 +96,23 @@ public class PlayerAttack : MonoBehaviour
         isRapid = false;
     }
 
-    public void FireBow()
+    // Hành vi bắn tên cung, dựa vào trạng thái hiện tại
+    public void FireBow(float arrowSpeed, float arrowDamage)
     {
         ArrowGFX.enabled = true;
         BowCharge += Time.deltaTime;
 
-        float ArrowSpeed = 0.5f + BowPower;
-        float ArrowDamage = 0.5f * BowPower;
+        float ArrowSpeed = arrowSpeed + BowPower;
+        float ArrowDamage = arrowDamage * BowPower;
 
         Enemy closestEnemy = FindClosestEnemy();
         if (closestEnemy != null)
         {
-
             Vector3 vectorToTarget = player.transform.position - closestEnemy.transform.position;
 
             float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg + 90f;
             Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
-            // Tạo một đối tượng mới và gán nó vào "RandomMap"
             Arrow Arrow = Instantiate(ArrowPrefab, Bow.position, rot).GetComponent<Arrow>();
             Arrow.transform.SetParent(randomMap);
 

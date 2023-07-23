@@ -1,9 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Skill4 : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static Skill4 Instance { get; private set; }
 
     [SerializeField]
@@ -14,21 +13,28 @@ public class Skill4 : MonoBehaviour
 
     float radius, moveSpeed;
 
-    // Use this for initialization
-
-
     [Header("Skill4")]
     public Image skillImage4;
     public float cooldown4 = 3f;
     public bool isCooldown4 = false;
     public bool isLockSkill4;
 
+    private void Awake()
+    {
+        // Đảm bảo chỉ có một thể hiện duy nhất của lớp Skill4
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
-        Instance = this;
         skillImage4.fillAmount = 1;
     }
 

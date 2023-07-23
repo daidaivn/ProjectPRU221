@@ -3,7 +3,10 @@ using UnityEngine.UI;
 
 public class Skill2 : MonoBehaviour
 {
+    // Định nghĩa thuộc tính tĩnh Instance
     public static Skill2 Instance { get; private set; }
+
+    // Các thuộc tính khác của lớp Skill2
     [SerializeField]
     int numberOfProjectiles;
 
@@ -15,25 +18,22 @@ public class Skill2 : MonoBehaviour
 
     float radius, moveSpeed;
 
-    // Use this for initialization
-
-
     [Header("Skill2")]
     public Image skillImage2;
     public float cooldown2 = 5f;
     public bool isCooldown2 = false;
     public bool isLockSkill2;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        // Khởi tạo thuộc tính Instance trong phương thức Start
         Instance = this;
+
+        // Các công việc khác trong phương thức Start
         skillImage2.fillAmount = 1;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         radius = 5f;
         moveSpeed = 5f;
