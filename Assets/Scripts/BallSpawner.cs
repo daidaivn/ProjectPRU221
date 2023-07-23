@@ -42,13 +42,14 @@ public class BallSpawner : MonoBehaviour
         {
             SpawnBear();
 
-            spawnTimer.Duration = 2;
+            spawnTimer.Duration = 1.5f;
             spawnTimer.Run();
         }
     }
-
+    bool check = false;
     public void SpawnBear()
     {
+
         int score = Convert.ToInt32(Regex.Replace("0" + scoreText.text, "\\D+", ""));
         Vector3 Location = new Vector3(UnityEngine.Random.Range(minSpawnX, maxSpawnX), UnityEngine.Random.Range(minSpawnY, maxSpawnY), -Camera.main.transform.position.z);
         Vector3 worldLocation = Camera.main.ScreenToWorldPoint(Location);
@@ -58,14 +59,26 @@ public class BallSpawner : MonoBehaviour
         ball.GetComponent<Enemy>().HealthLevel();
         ball.transform.position = worldLocation;
         var ilevel = Convert.ToInt32(Regex.Replace("0" + level.text, "\\D+", ""));
+        if (score >= 20 && score % 3 == 2)
+        {
+            check = true;
+        }
+        if (score >= 20 && score % 3 == 0 && check == true)
+        {
+            check = false;
+            var gobs = GameObject.FindGameObjectsWithTag("Enemy");
+            var x = gobs[gobs.Length - 1];
+            x.GetComponent<Enemy>().Upgrade(score);
+
+        }
         if (score / 20f > ilevel)
         {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>().AddHealth(100f);
             level.text = "Level: " + (ilevel + 1);
             var gobs = GameObject.FindGameObjectsWithTag("Enemy");
             var x = gobs[gobs.Length - 1];
             x.GetComponent<Enemy>().Upgrade(score);
             x.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>().AddHealth(100f);
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().AddSpeed();
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAttack>().LevelUp();
         }
