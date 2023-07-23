@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour {
 
     Vector2 movement;
 
+    public FixedJoystick joystick;
 
     public void onClickDash()
     {
@@ -86,21 +87,21 @@ public class PlayerMovement : MonoBehaviour {
         playerHealth.setSpecialValue(0);
         GameObject.Find("BigBoom").GetComponent<Button>().interactable = false;
     }
-    public void Movement()
-    {
-        float mx = Input.GetAxisRaw("Horizontal");
-        float my = Input.GetAxisRaw("Vertical");
+    //public void Movement()
+    //{
+    //    float mx = Input.GetAxisRaw("Horizontal");
+    //    float my = Input.GetAxisRaw("Vertical");
 
-        movement = new Vector2(mx, my).normalized;
+    //    movement = new Vector2(mx, my).normalized;
         
-    }
+    //}
 
     public void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
         public void Update() {
-        Movement();
+        //Movement();
         closet();
         dash();
         if (Input.GetKeyDown(KeyCode.H) && isdash == false)
@@ -116,6 +117,8 @@ public class PlayerMovement : MonoBehaviour {
             onClickMutiple();
 
         }
+        movement.x = joystick.Horizontal;
+        movement.y = joystick.Vertical;
     }
     private void FixedUpdate()
     {
