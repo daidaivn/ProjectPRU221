@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     [Header("Movement")]
     public float speed = 3f;
+
     [Header("Attack")]
     [SerializeField] private float attackDamage = 15f;
     [SerializeField] private float attackSpeed = 2f;
@@ -14,47 +15,82 @@ public class Enemy : MonoBehaviour
     [Header("Health")]
     private float health;
     [SerializeField] private float maxHealth;
-    [SerializeField]
 
-    private bool explosion;
+    [Header("Explosion Effect")]
+    public GameObject explosionEffectPrefab; // Prefab của Particle System để tạo hiệu ứng nổ khi quái vật bị giết.
+
+    private bool isFrozen = false;
+    private bool shiel = false;
 
     private Transform target;
-    private Transform target2;
     [SerializeField] private Sprite[] sprites;
     [SerializeField] private Color[] colors;
-
-    public GameObject shield;
 
     private void Start()
     {
         health = maxHealth;
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-       
+        try
+        {
+            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("Game Over");
+        }
+
+        // Khởi tạo mảng sprites với các sprite mong muốn
+        sprites = new Sprite[] { /* Thêm các sprite vào đây */ };
     }
+
+    public void Freeze()
+    {
+        if (!isFrozen)
+        {
+            isFrozen = true;
+            StartCoroutine(FreezeCoroutine());
+        }
+    }
+
+    private IEnumerator FreezeCoroutine()
+    {
+        float originalSpeed = this.speed;
+        speed = 0f;
+
+        yield return new WaitForSeconds(3f);
+
+        speed = originalSpeed;
+        isFrozen = false;
+    }
+
     public void HealthLevel()
     {
         health += 10f;
     }
-    [SerializeField] public AudioSource arrow;
+
     public void TakeDamageBomb(float dmg)
     {
-        if (health > 0 )
+        if (health > 0)
         {
-            
             health -= dmg;
             StartCoroutine(SpeedBoostCoroutine());
-
             Debug.Log("Enemy Health: " + health);
-            
         }
+
         if (health <= 0)
         {
-
-            Destroy(gameObject);
-            HUD hud = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUD>();
-            hud.AddPoint(1);
-
+            Die(); // Gọi hàm Die() khi quái vật chết.
         }
+    }
+    public void Upgrade(int point)
+    {
+        Debug.Log("upgrade" + point);
+        this.speed = 3f + point * 1f / 15;
+        this.attackDamage = 10f + point * 1f;
+        this.attackSpeed = 2f;
+        this.maxHealth = 30 * (point / 10) + 30;
+        gameObject.GetComponent<SpriteRenderer>().sprite = this.sprites[(point / 20 - 1) % (this.sprites.Length)];
+        gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite = this.sprites[(point / 20 - 1) % (this.sprites.Length)];
+        gameObject.GetComponent<SpriteRenderer>().color = this.colors[(point / 20 - 1) % (this.colors.Length)];
     }
     private IEnumerator SpeedBoostCoroutine()
     {
@@ -69,20 +105,16 @@ public class Enemy : MonoBehaviour
     {
         if (health > 0)
         {
-
             health -= dmg;
             Debug.Log("Enemy Health: " + health);
         }
+
         if (health <= 0)
         {
-
-            Destroy(gameObject);
-            HUD hud = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUD>();
-            hud.AddPoint(1);
-
+            Die(); // Gọi hàm Die() khi quái vật chết.
         }
     }
-    private bool shiel = false;
+
     public void UpdateShield()
     {
         shiel = true;
@@ -90,12 +122,19 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player" && shiel )
+        if (other.gameObject.tag == "Player" && shiel)
         {
             if (attackSpeed <= canAttack)
             {
-                other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
-                canAttack = 0f;
+                try
+                {
+                    other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
+                    canAttack = 0f;
+                }
+                catch (System.Exception)
+                {
+                    Debug.Log("Game Over");
+                }
             }
             else
             {
@@ -108,10 +147,17 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && shiel)
         {
-            if (attackSpeed <= canAttack )
+            if (attackSpeed <= canAttack)
             {
-                other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
-                canAttack = 0f;
+                try
+                {
+                    other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
+                    canAttack = 0f;
+                }
+                catch (System.Exception)
+                {
+                    Debug.Log("Game Over");
+                }
             }
             else
             {
@@ -119,18 +165,27 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
     void Update()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        if (Vector2.Distance(transform.position, target.position) > 0.5f)
-            transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        else
+        try
         {
-            Debug.Log("Target destroy");
-        }
-        UpdateShield();
+            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
 
+            if (Vector2.Distance(transform.position, target.position) > 0.5f)
+                transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+            else
+            {
+                Debug.Log("Target destroy");
+            }
+            UpdateShield();
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("Game Over");
+        }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Collider2D[] enemyit = Physics2D.OverlapCircleAll(transform.position, 10f);
@@ -138,24 +193,19 @@ public class Enemy : MonoBehaviour
         {
             if (col.tag == "Genrade")
             {
-
-                Enemy enemy = col.gameObject.GetComponent<Enemy>();
                 speed = 0f;
-
             }
-
         }
     }
-    public void Upgrade(int point)
-    {
-        Debug.Log("upgrade" + point);
-        this.speed = 3f + point * 1f / 15;
-        this.attackDamage = 10f + point * 1f;
-        this.attackSpeed = 2f;
-        this.maxHealth = 30 * (point / 10) + 30;
-        gameObject.GetComponent<SpriteRenderer>().sprite = this.sprites[(point / 20 - 1) % (this.sprites.Length)];
-        gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite = this.sprites[(point / 20 - 1) % (this.sprites.Length)];
-        gameObject.GetComponent<SpriteRenderer>().color = this.colors[(point / 20 - 1) % (this.colors.Length)];
-    }
 
+    private void Die()
+    {
+        // Thêm hiệu ứng nổ khi quái vật bị giết
+        GameObject explosionEffect = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+        Destroy(explosionEffect, 1.5f); // Hủy Particle System sau khi chạy xong
+
+        Destroy(gameObject);
+        HUD hud = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUD>();
+        hud.AddPoint(1);
+    }
 }

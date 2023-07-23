@@ -3,7 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - HUD
+  - DASH
+  - 3arrows
+  - explosion
+  - Wall1
+  - HUD2
+  - shield
+  - ExperienceItem
+  - Pill
+  - FREEZE
+  - RAPID
+  - BIGBOOM
   layers:
   - Default
   - TransparentFX
@@ -11,8 +24,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - PlayerProjectile
   - 
   - 
   - 
@@ -38,6 +51,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Map
+    uniqueID: 2535220635
+    locked: 0
+  - name: MapLayer
+    uniqueID: 3194234675
+    locked: 0
+  - name: Obstacle
+    uniqueID: 608199981
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

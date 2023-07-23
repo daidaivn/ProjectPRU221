@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,9 @@ public class BallController : MonoBehaviour
     private Rigidbody2D rigidbody;
     private Vector3 worldLocation;
     private Vector3 Location;
+
+
+
     void Start()
     {
         minSpawnX = 0;

@@ -8,7 +8,11 @@ public class HUD : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI healthText;
     [SerializeField]
+    TextMeshProUGUI specialText;
+    [SerializeField]
     GameObject health;
+    [SerializeField]
+    GameObject special;
     [SerializeField]
     TextMeshProUGUI levelText;
     [SerializeField]
@@ -54,7 +58,7 @@ public class HUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void AddPoint(int points)
