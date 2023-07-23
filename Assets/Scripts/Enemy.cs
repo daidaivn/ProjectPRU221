@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     {
         health = maxHealth;
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-       
+
     }
 
     public void Freeze()
@@ -61,14 +61,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] public AudioSource arrow;
     public void TakeDamageBomb(float dmg)
     {
-        if (health > 0 )
+        if (health > 0)
         {
-            
+
             health -= dmg;
             StartCoroutine(SpeedBoostCoroutine());
 
             Debug.Log("Enemy Health: " + health);
-            
+
         }
         if (health <= 0)
         {
@@ -113,7 +113,7 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player" && shiel )
+        if (other.gameObject.tag == "Player" && shiel)
         {
             if (attackSpeed <= canAttack)
             {
@@ -131,7 +131,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && shiel)
         {
-            if (attackSpeed <= canAttack )
+            if (attackSpeed <= canAttack)
             {
                 other.gameObject.GetComponent<PlayerHealth>().UpdateHealth(-attackDamage);
                 canAttack = 0f;
@@ -144,14 +144,25 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        if (Vector2.Distance(transform.position, target.position) > 0.5f)
-            transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        else
+        try
         {
-            Debug.Log("Target destroy");
+            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+
+            if (Vector2.Distance(transform.position, target.position) > 0.5f)
+                transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+            else
+            {
+                Debug.Log("Target destroy");
+            }
+            UpdateShield();
         }
-        UpdateShield();
+        catch (System.Exception)
+        {
+            Debug.Log("Game Over");
+        }
+
+
+
 
     }
     private void OnTriggerEnter2D(Collider2D collision)

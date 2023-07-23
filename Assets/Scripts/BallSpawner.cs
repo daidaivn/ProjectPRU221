@@ -59,11 +59,11 @@ public class BallSpawner : MonoBehaviour
         ball.GetComponent<Enemy>().HealthLevel();
         ball.transform.position = worldLocation;
         var ilevel = Convert.ToInt32(Regex.Replace("0" + level.text, "\\D+", ""));
-        if (score >= 20 && score % 3 == 2)
+        if (score >= 20 && score % 5 == 4)
         {
             check = true;
         }
-        if (score >= 20 && score % 3 == 0 && check == true)
+        if (score >= 20 && score % 5 == 0 && check == true)
         {
             check = false;
             var gobs = GameObject.FindGameObjectsWithTag("Enemy");

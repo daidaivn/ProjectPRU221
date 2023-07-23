@@ -18480,7 +18480,7 @@ MonoBehaviour:
   maxDistance: 10
   minDistance: 5
   objectInterval: 20
-  destroyDistance: 12
+  maxDistanceFromPlayer: 30
 --- !u!1 &1027326598
 GameObject:
   m_ObjectHideFlags: 0
