@@ -6,11 +6,10 @@ public class FixedJoystick : Joystick
 {
     public float GetH()
     {
-        return Horizontal;
+        return Input.GetAxis("Horizontal"); // Return the horizontal axis value
     }
-
     public float GetV()
     {
-        return Vertical;
+        return Input.GetAxis("Vertical"); // Return the vertical axis value
     }
 }
