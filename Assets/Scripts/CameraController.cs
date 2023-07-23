@@ -21,6 +21,9 @@ public class CameraController : MonoBehaviour
     private Dictionary<Vector2Int, GameObject> tiles = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, GameObject> obstacles = new Dictionary<Vector2Int, GameObject>();
 
+    private Queue<GameObject> tilePool = new Queue<GameObject>();
+    private Queue<GameObject> obstaclePool = new Queue<GameObject>();
+
     private void Start()
     {
         GenerateInitialMap();
@@ -30,6 +33,8 @@ public class CameraController : MonoBehaviour
     {
         // Di chuyển camera theo vị trí của nhân vật
         transform.position = new Vector3(character.transform.position.x, character.transform.position.y, transform.position.z);
+
+        // Gọi hàm UpdateMap để cập nhật map và vật cản trong vùng viewDistance
         UpdateMap();
     }
 
@@ -84,7 +89,7 @@ public class CameraController : MonoBehaviour
                     }
                     if (!obstacles.ContainsKey(tilePosition) && IsPositionWithinViewDistance(tilePosition, currentCameraPosition))
                     {
-                        SpawnObstacle(tilePosition);
+                        SpawnRandomObstacle(tilePosition);
                     }
                 }
             }
@@ -107,7 +112,8 @@ public class CameraController : MonoBehaviour
     {
         if (tiles.TryGetValue(position, out GameObject tile))
         {
-            Destroy(tile);
+            tile.SetActive(false);
+            tilePool.Enqueue(tile);
             tiles.Remove(position);
         }
     }
@@ -116,7 +122,8 @@ public class CameraController : MonoBehaviour
     {
         if (obstacles.TryGetValue(position, out GameObject obstacle))
         {
-            Destroy(obstacle);
+            obstacle.SetActive(false);
+            obstaclePool.Enqueue(obstacle);
             obstacles.Remove(position);
         }
     }
@@ -142,12 +149,31 @@ public class CameraController : MonoBehaviour
     private void SpawnTile(Vector2Int position)
     {
         Vector3 spawnPosition = new Vector3(position.x * tileSize, position.y * tileSize, -1f); // Đặt giá trị z là -1f
-        GameObject newTile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
+        GameObject newTile = GetTileFromPool();
+        if (newTile == null)
+        {
+            newTile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            newTile.transform.position = spawnPosition;
+            newTile.SetActive(true);
+        }
         newTile.transform.parent = parentContainer.transform; // Đặt mục cha cho mục con
         tiles.Add(position, newTile);
     }
 
-    private void SpawnObstacle(Vector2Int position)
+    private GameObject GetTileFromPool()
+    {
+        if (tilePool.Count > 0)
+        {
+            GameObject tile = tilePool.Dequeue();
+            return tile;
+        }
+        return null;
+    }
+
+    private void SpawnRandomObstacle(Vector2Int position)
     {
         float randomDistance = Random.Range(minDistance, maxDistance);
         float obstacleSpacing = randomDistance * tileSize; // Khoảng cách giữa các vật cản
@@ -168,10 +194,29 @@ public class CameraController : MonoBehaviour
         {
             int randomIndex = Random.Range(0, obstaclePrefabs.Length);
             GameObject obstaclePrefab = obstaclePrefabs[randomIndex];
-            GameObject newObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+            GameObject newObstacle = GetObstacleFromPool();
+            if (newObstacle == null)
+            {
+                newObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+            }
+            else
+            {
+                newObstacle.transform.position = spawnPosition;
+                newObstacle.SetActive(true);
+            }
             newObstacle.transform.parent = spawnedObjectsGroup.transform; // Thêm vật cản vào trong GameObject Group
             obstacles.Add(position, newObstacle);
         }
+    }
+
+    private GameObject GetObstacleFromPool()
+    {
+        if (obstaclePool.Count > 0)
+        {
+            GameObject obstacle = obstaclePool.Dequeue();
+            return obstacle;
+        }
+        return null;
     }
 
     private bool IsObstacleTooClose(Vector2Int position, float obstacleSpacing)
