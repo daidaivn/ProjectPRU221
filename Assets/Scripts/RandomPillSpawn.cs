@@ -65,11 +65,19 @@ public class RandomPillSpawn : MonoBehaviour
 
         foreach (GameObject spawnedObject in spawnedObjects)
         {
-            if (Vector2.Distance(playerTransform.position, spawnedObject.transform.position) > maxDistanceFromPlayer)
+            try
             {
-                Destroy(spawnedObject);
-                Debug.Log("Object destroyed: " + spawnedObject.transform.position);
+                if (Vector2.Distance(playerTransform.position, spawnedObject.transform.position) > maxDistanceFromPlayer)
+                {
+                    Destroy(spawnedObject);
+                    Debug.Log("Object destroyed: " + spawnedObject.transform.position);
+                }
             }
+            catch (System.Exception)
+            {
+                Debug.Log("Game Over");
+            }
+            
         }
     }
 }
