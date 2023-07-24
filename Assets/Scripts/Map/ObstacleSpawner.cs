@@ -17,6 +17,8 @@ public class ObstacleSpawner : MonoBehaviour
     private List<GameObject> objectPool = new List<GameObject>(); // Object Pool cho vật cản
     private int numSpawnedObjects = 0; // Biến đếm số lượng vật cản đã được sinh ra
 
+    private bool isGameOver = false; // Thêm biến để lưu trạng thái Canvas "GameOver"
+
     private void Start()
     {
         InitializeObjectPool();
@@ -24,14 +26,18 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void Update()
     {
-        // Xóa các vật thể xa quá người chơi
-        DestroyObjectsFarFromPlayer();
-
-        // Tạo mới số lượng vật thể được chỉ định
-        int numObjectsToSpawnThisUpdate = Mathf.Min(numObjectsToSpawn, maxNumObjects - numSpawnedObjects);
-        for (int i = 0; i < numObjectsToSpawnThisUpdate; i++)
+        // Kiểm tra nếu Canvas "GameOver" không được hiển thị, thì mới thực hiện spawn vật cản
+        if (!IsGameOverCanvasActive())
         {
-            GenerateObject();
+            // Xóa các vật thể xa quá người chơi
+            DestroyObjectsFarFromPlayer();
+
+            // Tạo mới số lượng vật thể được chỉ định
+            int numObjectsToSpawnThisUpdate = Mathf.Min(numObjectsToSpawn, maxNumObjects - numSpawnedObjects);
+            for (int i = 0; i < numObjectsToSpawnThisUpdate; i++)
+            {
+                GenerateObject();
+            }
         }
     }
 
@@ -76,7 +82,20 @@ public class ObstacleSpawner : MonoBehaviour
         // Tăng biến đếm số lượng vật cản đã sinh ra
         numSpawnedObjects++;
     }
-
+    bool IsGameOverCanvasActive()
+    {
+        GameObject canvasGameOver = GameObject.Find("GameOver");
+        if (canvasGameOver != null && canvasGameOver.activeInHierarchy)
+        {
+            isGameOver = true;
+            return true;
+        }
+        else
+        {
+            isGameOver = false;
+            return false;
+        }
+    }
     private void DestroyObjectsFarFromPlayer()
     {
         // Kiểm tra và xóa các vật cản xa quá khoảng cách hiển thị

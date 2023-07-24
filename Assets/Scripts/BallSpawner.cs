@@ -43,12 +43,16 @@ public class BallSpawner : MonoBehaviour
 
     void Update()
     {
-        if (spawnTimer.Finished)
+        // Kiểm tra nếu Canvas "GameOver" không được hiển thị, thì mới thực hiện spawn bóng
+        if (!IsGameOverCanvasActive())
         {
-            SpawnBear();
+            if (spawnTimer.Finished)
+            {
+                SpawnBear();
 
-            spawnTimer.Duration = 1.5f;
-            spawnTimer.Run();
+                spawnTimer.Duration = 0.1f;
+                spawnTimer.Run();
+            }
         }
     }
 
@@ -82,5 +86,21 @@ public class BallSpawner : MonoBehaviour
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAttack>().LevelUp();
         }
     }
+    bool IsGameOverCanvasActive()
+    {
+        GameObject canvasGameOver = GameObject.Find("GameOver");
+        if (canvasGameOver != null && canvasGameOver.activeInHierarchy)
+        {
+            return true;
+        }
+        return false;
+    }
 
 }
+
+
+
+
+
+
+

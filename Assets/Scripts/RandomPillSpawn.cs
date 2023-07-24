@@ -22,7 +22,7 @@ public class RandomPillSpawn : MonoBehaviour
 
     // Define the spawnTimer variable
     private Timer spawnTimer;
-
+    private bool isGameOver = false;
     private void Start()
     {
         var width = Screen.width - 100;
@@ -46,13 +46,17 @@ public class RandomPillSpawn : MonoBehaviour
 
     private void Update()
     {
-        if (timeSinceLastSpawn >= objectInterval && !isGeneratingObject)
+        // Kiểm tra nếu Canvas "GameOver" không được hiển thị, thì mới thực hiện spawn đối tượng
+        if (!IsGameOverCanvasActive())
         {
-            GenerateObject();
-        }
+            if (timeSinceLastSpawn >= objectInterval && !isGeneratingObject)
+            {
+                GenerateObject();
+            }
 
-        timeSinceLastSpawn += Time.deltaTime;
-        DestroyObjectsFarFromPlayer();
+            timeSinceLastSpawn += Time.deltaTime;
+            DestroyObjectsFarFromPlayer();
+        }
     }
 
     private void GenerateObject()
@@ -91,7 +95,20 @@ public class RandomPillSpawn : MonoBehaviour
 
         isGeneratingObject = false;
     }
-
+    bool IsGameOverCanvasActive()
+    {
+        GameObject canvasGameOver = GameObject.Find("GameOver");
+        if (canvasGameOver != null && canvasGameOver.activeInHierarchy)
+        {
+            isGameOver = true;
+            return true;
+        }
+        else
+        {
+            isGameOver = false;
+            return false;
+        }
+    }
     private void DestroyObjectsFarFromPlayer()
     {
         GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("Pill");

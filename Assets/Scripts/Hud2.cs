@@ -13,6 +13,7 @@ public class Hud2 : MonoBehaviour
     int score;
     const string ScorePrefix = "Score: ";
     // Start is called before the first frame update
+    private bool isGameOver = false;
     void Start()
     {
         gamemover.Play();
@@ -23,5 +24,23 @@ public class Hud2 : MonoBehaviour
     void Update()
     {
         scoreText1.text = scoreText2.text;
+        if (!IsGameOverCanvasActive())
+        {
+            scoreText1.text = scoreText2.text;
+        }
+    }
+    bool IsGameOverCanvasActive()
+    {
+        GameObject canvasGameOver = GameObject.Find("GameOver");
+        if (canvasGameOver != null && canvasGameOver.activeInHierarchy)
+        {
+            isGameOver = true;
+            return true;
+        }
+        else
+        {
+            isGameOver = false;
+            return false;
+        }
     }
 }
