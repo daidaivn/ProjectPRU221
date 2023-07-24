@@ -29,9 +29,15 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         health = maxHealth;
+
         try
         {
-            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+            if (player != null)
+            {
+                target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+            }
         }
         catch (System.Exception)
         {
@@ -145,6 +151,7 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
+
         if (other.gameObject.tag == "Player" && shiel)
         {
             if (attackSpeed <= canAttack)
@@ -170,15 +177,23 @@ public class Enemy : MonoBehaviour
     {
         try
         {
-            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
 
-            if (Vector2.Distance(transform.position, target.position) > 0.5f)
-                transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-            else
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+            // Kiểm tra xem có tồn tại GameObject với tag "Player" hay không
+            if (player != null)
             {
-                Debug.Log("Target destroy");
+                target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+
+                if (Vector2.Distance(transform.position, target.position) > 0.5f)
+                    transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+                else
+                {
+                    Debug.Log("Target destroy");
+                }
+                UpdateShield();
             }
-            UpdateShield();
+
         }
         catch (System.Exception)
         {
