@@ -50,7 +50,7 @@ public class BallSpawner : MonoBehaviour
             {
                 SpawnBear();
 
-                spawnTimer.Duration = 0.1f;
+                spawnTimer.Duration = 1.5f;
                 spawnTimer.Run();
             }
         }
