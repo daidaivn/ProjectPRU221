@@ -96,7 +96,7 @@ public class ObstacleSpawner : MonoBehaviour
                 }
                 catch (System.Exception)
                 {
-                    Debug.Log("Game Over");
+                    Debug.Log("Game bom");
                 }
 
             }
